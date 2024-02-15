@@ -8,7 +8,7 @@ Organização do processador : ciclo-único.
 
 * Software utilizado na programação do projeto : [Quartus Prime Lite, versão 20.1](https://www.intel.com/content/www/us/en/collections/products/fpga/software/downloads.html?s=Newest&edition=lite&f:guidetmD240C377263B4C70A4EA0E452D0182CA=%5BIntel%C2%AE%20Quartus%C2%AE%20Prime%20Design%20Software%3BIntel%C2%AE%20Quartus%C2%AE%20Prime%20Lite%20Edition%5D)
 
-Para entender mais sobre o projeto, confira o arquivo `Relogio.pdf`.
+Para entender mais sobre o projeto, confira o arquivo `Projeto_MIPS_ManualUso.pdf`.
 
 #### 📊️ Diagrama da Arquitetura
 
