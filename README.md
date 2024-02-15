@@ -12,6 +12,10 @@ Para entender mais sobre o projeto, confira o arquivo `Projeto_MIPS_ManualUso.pd
 
 #### 📊️ Diagrama da Arquitetura
 
+<div align="center">
+      <img alt="diagrama principal" src="Img/diagrama_principal.png" width="600rm"\>
+</div>
+
 #### 🧪️ Arquivo de teste (`.mif` da ROM)
 
 ```bash
