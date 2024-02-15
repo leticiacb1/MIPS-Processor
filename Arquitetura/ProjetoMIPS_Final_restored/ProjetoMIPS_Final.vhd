@@ -1,0 +1,400 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity ProjetoMIPS_Final is
+  -- Total de bits das entradas e saidas
+  generic ( 
+		  
+		  larguraEnderecoROM : natural := 32;
+		  larguraDadosROM    : natural := 32;
+		  
+		  larguraDados       : natural := 32;
+		  		  
+        simulacao : boolean := FALSE          -- para gravar na placa, altere de TRUE para FALSE
+  );
+  port(
+		CLOCK_50 : in std_logic;
+		KEY      : in std_logic_vector(3 downto 0);
+		SW       : in  std_logic_vector(9 downto 0);
+		LEDR     : out std_logic_vector(9 downto 0);
+		HEX0     : out std_logic_vector(6 downto 0);
+		HEX1     : out std_logic_vector(6 downto 0);
+		HEX2     : out std_logic_vector(6 downto 0);
+		HEX3     : out std_logic_vector(6 downto 0);	
+		HEX4     : out std_logic_vector(6 downto 0);
+		HEX5     : out std_logic_vector(6 downto 0)
+  );
+  
+end entity;
+
+
+architecture arquitetura of ProjetoMIPS_Final is
+	
+	signal CLK         : std_logic;
+	
+	---------- Registrador PC ----------
+	 
+	signal proxPC             : std_logic_vector(larguraDados-1 downto 0);
+	signal PC                 : std_logic_vector(larguraDados-1 downto 0);
+	
+	signal PC_mais_4          : std_logic_vector(larguraDados-1 downto 0);
+	
+	signal entrada0_MUX_proxPC: std_logic_vector(larguraDados-1 downto 0);
+	signal entrada1_MUX_proxPC: std_logic_vector(larguraDados-1 downto 0);
+	
+	signal mux_procPC_out     : std_logic_vector(larguraDados-1 downto 0);
+	
+	------------- Instruçoes ------------
+	
+	signal instrucoes         : std_logic_vector(larguraDadosROM-1 downto 0);
+	
+	alias opCode              : std_logic_vector is instrucoes(31 downto 26);
+	alias funct               : std_logic_vector is instrucoes(5 downto 0);
+	alias shamt               : std_logic_vector is instrucoes(10 downto 6);
+	
+	alias imediato_26         : std_logic_vector is instrucoes(25 downto 0);
+	alias imediato_16         : std_logic_vector is instrucoes(15 downto 0);
+	
+	alias Rs                  : std_logic_vector is instrucoes(25 downto 21);
+	alias Rt                  : std_logic_vector is instrucoes(20 downto 16);
+	alias Rd                  : std_logic_vector is instrucoes(15 downto 11);
+	
+	------- Banco de Registradores -----
+	
+	signal endReg3            : std_logic_vector(4 downto 0);
+	signal dadoEscritoReg3    : std_logic_vector(larguraDados-1  downto 0);
+	
+	signal dadoLidoReg1       : std_logic_vector(larguraDados-1 downto 0);
+	signal dadoLidoReg2       : std_logic_vector(larguraDados-1 downto 0);
+	
+	----------- Estende Sinal ----------
+	
+	signal sigExt             : std_logic_vector(larguraDados-1 downto 0);
+	
+	--------------- LUI ----------------
+	
+	signal sigExt_LUI         : std_logic_vector(larguraDados-1 downto 0);
+	
+	--------------- ULA ----------------
+	
+	alias entradaA            : std_logic_vector is dadoLidoReg1;
+	signal entradaB           : std_logic_vector(larguraDados-1 downto 0);
+	signal saidaULA           : std_logic_vector(larguraDados-1 downto 0);
+	
+	signal zeroFlag           : std_logic;
+	signal ULActrl            : std_logic_vector(3 downto 0);
+	
+	------------ mux ULA/MEM -----------
+	signal out_mux_ULA_MEM    : std_logic_vector(larguraDados-1 downto 0);
+	
+	--------------- RAM ----------------
+	
+	signal dadoLido_RAM       : std_logic_vector(larguraDados-1 downto 0);
+	signal entrada1_RAM       : std_logic_vector(larguraDados-1 downto 0);
+	
+	------------- MUX_BEQ --------------
+	signal selMuxBEQ          : std_logic;
+	signal PC_4_SigExt        : std_logic_vector(larguraDados-1 downto 0);
+	
+	---------- MUX_BEQ e BNE ------------
+	signal mux_BEQ_BNE_out    : std_logic;
+	
+	--------- Pontos de Controle  ------
+	
+	signal pontosDeControle   : std_logic_vector(15 downto 0);
+	
+	alias JR                  : std_logic        is pontosDeControle(15);
+	alias selMuxPC            : std_logic        is pontosDeControle(14);
+	alias selMuxRt_Rd         : std_logic_vector is pontosDeControle(13 downto 12);
+	alias ORI_ANDI            : std_logic        is pontosDeControle(11);
+	alias habilitaEscritaReg  : std_logic        is pontosDeControle(10);
+	alias selMuxRt_Imediato   : std_logic        is pontosDeControle(9);
+	alias do_sll              : std_logic        is pontosDeControle(8);
+	alias tipoR               : std_logic        is pontosDeControle(7);
+	alias selMuxULA_MEM       : std_logic_vector is pontosDeControle(6 downto 5);
+	alias BEQ                 : std_logic        is pontosDeControle(4);
+	alias BNE                 : std_logic        is pontosDeControle(3);
+	alias habLeituraMEM       : std_logic        is pontosDeControle(2);
+	alias habEscritaMEM       : std_logic        is pontosDeControle(1);
+	alias LBU                 : std_logic        is pontosDeControle(0);
+	
+	-------- MUX hex e LEDR ------
+	signal saidaMUX_HEX_LEDR  : std_logic_vector(larguraDados-1 downto 0);
+	
+	-------- Dummy Signals -------
+	signal dummySignal        : std_logic_vector(larguraDados-1 downto 0);
+	signal dummyEndReg        : std_logic_vector(4 downto 0);
+	
+	-------- Shift --------
+	
+	signal shift_data_out     : std_logic_vector(larguraDados-1 downto 0);
+	
+begin
+	
+	----------------------------------------------------------------
+	------------------------ Edge Detector -------------------------
+	----------------------------------------------------------------
+	
+	gravar:  if simulacao generate
+		CLK <= KEY(0);
+	else generate	
+	detectorSub0: work.edgeDetector(bordaSubida)
+       port map (clk => CLOCK_50, entrada => (not KEY(0)), saida => CLK);
+	end generate;
+	
+	-- CLK <= CLOCK_50
+	
+	----------------------------------------------------------------
+	----------------------------- ROM ------------------------------
+	----------------------------------------------------------------
+	
+	ROM_MIPS :  entity work.ROMMIPS  generic map (dataWidth => larguraDadosROM , addrWidth=> larguraEnderecoROM)
+		port map( 
+			Endereco => PC, Dado => instrucoes
+		);
+	
+
+	----------------------------------------------------------------
+	-------------------- EXTENSOR DE SINAL -------------------------
+	----------------------------------------------------------------
+	Estende_Sinal : entity work.estendeSinalGenerico   generic map (larguraDadoEntrada => 16, larguraDadoSaida => larguraDados)
+          port map (SelMux_ORIeANDI => ORI_ANDI, estendeSinal_IN => imediato_16, estendeSinal_OUT =>  sigExt);
+	
+	
+	----------------------------------------------------------------
+	--------------------------- LUI --------------------------------
+	----------------------------------------------------------------
+	LUI : entity work.LUI   generic map (larguraDadoEntrada => 16, larguraDadoSaida => larguraDados)
+          port map (estendeSinal_IN => imediato_16, estendeSinal_OUT => sigExt_LUI);
+	
+	----------------------------------------------------------------
+	-------------------- Banco de Registradores --------------------
+	----------------------------------------------------------------
+	
+	--- MUX : Banco de Registradores ---
+	
+	MUX_RT_RD : entity work.muxGenerico4x1 generic map (larguraDados => 5)
+        port map( entrada0 => Rt, entrada1 => Rd, entrada2 => "11111", entrada3 => dummyEndReg,
+                 seletor_MUX => selMuxRt_Rd,
+                 saida_MUX => endReg3);
+	
+	------ Banco de Registradores ------
+	
+	Banco_de_Registradores :  entity work.bancoRegistradores  generic map (larguraDados => larguraDados)
+        port map( clk => CLK , 
+						registrador1 => Rs, registrador2 => Rt, registrador3 => endReg3,
+						dadoEscritoReg3 => dadoEscritoReg3, habEscrita => habilitaEscritaReg,
+						dadoLidoReg1 => dadoLidoReg1, dadoLidoReg2 => dadoLidoReg2);
+	
+	--- MUX : Entrada B da ULA --
+	MUX_RT_IMEDIATO : entity work.muxGenerico2x1 generic map (larguraDados => larguraDados)
+        port map( entrada0 => dadoLidoReg2, entrada1 => sigExt,
+                 seletor_MUX => selMuxRt_Imediato,
+                 saida_MUX => entradaB);
+	
+	----------------------------------------------------------------
+	------------------ UNIDADE DE CONTROLE ULA ---------------------
+	----------------------------------------------------------------
+
+	Unidade_Controle_ULA : entity work.UnidadeControleULA
+        port map( 
+						TipoR   => tipoR,
+						opcode  => opCode,
+						funct   => funct,
+		            ULActrl => ULActrl
+		  );
+		  
+	----------------------------------------------------------------
+	----------------------------- ULA ------------------------------
+	----------------------------------------------------------------
+	
+	ULA : entity work.ULA
+		port map (
+			A => entradaA, B => entradaB,
+			ULActrl => ULActrl,
+			resultado => saidaULA,
+			zeroFlag => zeroFlag
+		);
+	
+	--- SOMADOR SigExt ---
+	
+	SOMADOR_SigExt : entity work.somadorGenerico
+        port map( entrada0 => PC_mais_4, entrada1=> sigExt(29 downto 0) & "00",  
+						saida => PC_4_SigExt);
+	
+	
+	---- MUX BEQ e BNE ----
+	
+	MUX_BEQ_BNE : entity work.muxGenerico2x1_1bit
+        port map( entrada0 => not (zeroFlag) , entrada1 => zeroFlag,
+                 seletor_MUX => BEQ,
+                 saida_MUX => mux_BEQ_BNE_out);
+	
+	
+	------- MUX BEQ -------
+	
+	selMuxBEQ <=  mux_BEQ_BNE_out and (BEQ or BNE);
+	
+	MUX_BEQ : entity work.muxGenerico2x1 generic map (larguraDados => larguraDados)
+        port map( entrada0 => PC_mais_4, entrada1 => PC_4_SigExt,
+                 seletor_MUX => selMuxBEQ,
+                 saida_MUX => entrada0_MUX_proxPC);
+	
+	----------------------------------------------------------------
+	----------------------------- RAM ------------------------------
+	----------------------------------------------------------------
+	
+	RAM : entity work.RAMMIPS
+	 port map (clk => CLK,
+				  Endereco => saidaULA, 
+				  Dado_in =>  dadoLidoReg2, Dado_out => dadoLido_RAM,
+				  we => habEscritaMEM, re => habLeituraMEM, habilita => '1');
+	 
+	-- Mux LBU --
+	MUX_LBU : entity work.muxGenerico2x1 generic map (larguraDados => larguraDados)
+        port map( entrada0 => dadoLido_RAM, entrada1 => (31 downto 8 => '0') & dadoLido_RAM(7 downto 0),
+                 seletor_MUX => LBU,
+                 saida_MUX => entrada1_RAM); 
+	
+	 
+	-- Mux : Memoria RAM / Banco de Registradores --
+	
+	MUX_ULA_MEM : entity work.muxGenerico4x1 generic map (larguraDados => larguraDados)
+        port map( entrada0 => saidaULA, entrada1 => entrada1_RAM, entrada2 => PC_mais_4, entrada3 => sigExt_LUI, 
+                 seletor_MUX => selMuxULA_MEM,
+                 saida_MUX => out_mux_ULA_MEM);
+		
+	----------------------------------------------------------------
+	-----------------------------  SLL -----------------------------
+	----------------------------------------------------------------
+	
+	-- SLL
+	SHIFT : entity work.shiftLeft generic map (larguraDados => larguraDados)
+			port map(
+				entrada => entradaB,
+		      tamanho => shamt, 
+				saida   => shift_data_out
+			);
+	
+	
+	-- Mux sll : shift_left
+	MUX_SLL : entity work.muxGenerico2x1 generic map (larguraDados => larguraDados)
+        port map( entrada0 => out_mux_ULA_MEM, entrada1 => shift_data_out,
+                 seletor_MUX => do_sll ,
+                 saida_MUX => dadoEscritoReg3);
+	
+	
+	----------------------------------------------------------------
+	-----------------------------  PC ------------------------------
+	----------------------------------------------------------------
+	
+	-- Mux PC --
+	entrada1_MUX_proxPC <= PC_mais_4(31 downto 28) & imediato_26 & "00";
+	
+	MUX_PC : entity work.muxGenerico2x1 generic map (larguraDados => larguraDados)
+        port map( entrada0 => entrada0_MUX_proxPC, entrada1 =>  entrada1_MUX_proxPC,
+                 seletor_MUX => selMuxPC,
+                 saida_MUX => mux_procPC_out);
+	
+	-- Mux JR --
+	MUX_JR : entity work.muxGenerico2x1 generic map (larguraDados => larguraDados)
+        port map( entrada0 => mux_procPC_out, entrada1 => entradaA,
+                 seletor_MUX => JR,
+                 saida_MUX => proxPC);
+	
+	
+	-- Registrador PC --
+	Registrador_PC: entity work.registradorGenerico   generic map (larguraDados => larguraDadosROM)
+          port map (DIN => proxPC , DOUT => PC, 
+			           ENABLE => '1', CLK => CLK, RST => '0'); 
+	
+	-- Incrementa PC --
+	Incrementa_PC  : entity work.somaConstante  generic map (larguraDados => larguraDadosROM, constante => 4)
+        port map( entrada => PC, saida => PC_mais_4);
+		  
+	----------------------------------------------------------------
+	--------------------- UNIDADE DE CONTROLE ----------------------
+	----------------------------------------------------------------
+	
+	Unidade_Controle : entity work.UnidadeControle
+        port map( 
+				funct  => funct,
+				opcode => opCode,
+				pontosControle => pontosDeControle
+		  );
+		  
+	----------------------------------------------------------------
+	-------------------------  RETORNO  ----------------------------
+	----------------------------------------------------------------
+	
+	-- ------------- -------------     
+	-- MUX : SW1/SW0 (bit1/bit0)--
+	-- ------------- -------------
+	
+	-- 00 : PC 
+	-- 01 : Saida da ULA
+	-- 10 : entrada A
+	-- 11 : entrada B
+	
+	MUX_HEX_LEDS : entity work.muxGenerico4x1 generic map (larguraDados => larguraDados)
+        port map( entrada0 => PC , entrada1 => saidaULA, entrada2=> entradaA, entrada3=> entradaB,
+                 seletor_MUX => SW(1) & SW(0),
+                 saida_MUX => saidaMUX_HEX_LEDR);
+	
+	
+	------- LEDS --------
+
+	LEDR(7 downto 4) <= saidaMUX_HEX_LEDR(31 downto 28);
+	LEDR(3 downto 0) <= saidaMUX_HEX_LEDR(27 downto 24);
+	
+	------- HEXs --------
+	
+	HEX_5 : entity work.conversorHex7Seg
+					port map(
+					dadoHex => saidaMUX_HEX_LEDR(23 downto 20),
+					apaga =>  '0',
+					negativo => '0',
+					overFlow =>  '0',
+					saida7seg => HEX5);
+	
+	HEX_4 : entity work.conversorHex7Seg
+					port map(
+					dadoHex => saidaMUX_HEX_LEDR(19 downto 16),
+					apaga =>  '0',
+					negativo => '0',
+					overFlow =>  '0',
+					saida7seg => HEX4);
+	
+	HEX_3 : entity work.conversorHex7Seg
+					port map(
+					dadoHex => saidaMUX_HEX_LEDR(15 downto 12),
+					apaga =>  '0',
+					negativo => '0',
+					overFlow =>  '0',
+					saida7seg => HEX3);
+	
+	HEX_2 : entity work.conversorHex7Seg
+					port map(
+					dadoHex => saidaMUX_HEX_LEDR(11 downto 8),
+					apaga =>  '0',
+					negativo => '0',
+					overFlow =>  '0',
+					saida7seg => HEX2);
+					
+	HEX_1 : entity work.conversorHex7Seg
+					port map(
+					dadoHex => saidaMUX_HEX_LEDR(7 downto 4),
+					apaga =>  '0',
+					negativo => '0',
+					overFlow =>  '0',
+					saida7seg => HEX1);
+	
+	HEX_0 : entity work.conversorHex7Seg
+					port map(
+					dadoHex => saidaMUX_HEX_LEDR(3 downto 0),
+					apaga =>  '0',
+					negativo => '0',
+					overFlow =>  '0',
+					saida7seg => HEX0);
+	
+end architecture;

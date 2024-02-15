@@ -1,0 +1,108 @@
+Restore Archived Project report for ProjetoMIPS_Final
+Mon Jun 12 09:30:45 2023
+Quartus Prime Version 20.1.0 Build 711 06/05/2020 SJ Lite Edition
+
+
+---------------------
+; Table of Contents ;
+---------------------
+  1. Legal Notice
+  2. Restore Archived Project Summary
+  3. Restore Archived Project Messages
+  4. Files Restored
+  5. Files Not Restored
+
+
+
+----------------
+; Legal Notice ;
+----------------
+Copyright (C) 2020  Intel Corporation. All rights reserved.
+Your use of Intel Corporation's design tools, logic functions 
+and other software and tools, and any partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Intel Program License 
+Subscription Agreement, the Intel Quartus Prime License Agreement,
+the Intel FPGA IP License Agreement, or other applicable license
+agreement, including, without limitation, that your use is for
+the sole purpose of programming logic devices manufactured by
+Intel and sold by Intel or its authorized distributors.  Please
+refer to the applicable agreement for further details, at
+https://fpgasoftware.intel.com/eula.
+
+
+
++-------------------------------------------------------------------------+
+; Restore Archived Project Summary                                        ;
++---------------------------------+---------------------------------------+
+; Restore Archived Project Status ; Successful - Mon Jun 12 09:30:45 2023 ;
+; Revision Name                   ; ProjetoMIPS_Final                     ;
+; Top-level Entity Name           ; ProjetoMIPS_Final                     ;
+; Family                          ; Cyclone V                             ;
++---------------------------------+---------------------------------------+
+
+
++-----------------------------------+
+; Restore Archived Project Messages ;
++-----------------------------------+
+Info: Successfully restored '/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/ProjetoMIPS_Final.qar' into the '/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/ProjetoMIPS_Final_restored/' directory
+Info: Generated report 'ProjetoMIPS_Final.restore.rpt'
+Info (23030): Evaluation of Tcl script /home/leticiacb/intelFPGA_lite/20.1/quartus/common/tcl/apps/qpm/qar.tcl was successful
+Info: Quartus Prime Shell was successful. 0 errors, 0 warnings
+    Info: Peak virtual memory: 576 megabytes
+    Info: Processing ended: Mon Jun 12 09:30:45 2023
+    Info: Elapsed time: 00:00:00
+    Info: Total CPU time (on all processors): 00:00:00
+
+
++----------------------------+
+; Files Restored             ;
++----------------------------+
+; File Name                  ;
++----------------------------+
+; qar_info.json              ;
+; HEX.vhd                    ;
+; LUI.vhd                    ;
+; ProjetoMIPS_Final.qpf      ;
+; ProjetoMIPS_Final.qsf      ;
+; ProjetoMIPS_Final.vhd      ;
+; RAMMIPS.vhd                ;
+; RAMcontent.mif             ;
+; ROMMIPS.vhd                ;
+; ROMcontent.mif             ;
+; ROMcontent_LBUeNOR.mif     ;
+; ROMcontent_NOR.mif         ;
+; SomadorCompleto1bit.vhd    ;
+; ULA.vhd                    ;
+; ULA1bit.vhd                ;
+; ULA31bit.vhd               ;
+; ULASomaSub.vhd             ;
+; UnidadeControle.vhd        ;
+; UnidadeControleULA.vhd     ;
+; bancoRegistradores.vhd     ;
+; buffer_3_state_8portas.vhd ;
+; conversorHex7Seg.vhd       ;
+; edgeDetector.vhd           ;
+; estendeSinalGenerico.vhd   ;
+; flipflop.vhd               ;
+; muxGenerico2x1.vhd         ;
+; muxGenerico2x1_1bit.vhd    ;
+; muxGenerico4x1.vhd         ;
+; muxGenerico4x_1bit.vhd     ;
+; registradorGenerico.vhd    ;
+; shiftLeft.vhd              ;
+; somaConstante.vhd          ;
+; somadorGenerico.vhd        ;
+; assignment_defaults.qdf    ;
++----------------------------+
+
+
++--------------------+
+; Files Not Restored ;
++--------------------+
+; File Name          ;
++--------------------+
+
+

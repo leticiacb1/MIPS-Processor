@@ -1,0 +1,56 @@
+Quartus Prime Archive log --	/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/ProjetoMIPS_Final.qarlog
+
+Archive:	/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/ProjetoMIPS_Final.qar
+Date:		Mon Jun 12 09:19:22 2023
+Quartus Prime		20.1.0 Build 711 06/05/2020 SJ Lite Edition
+
+	=========== Files Selected: ===========
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/HEX.vhd
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/LUI.vhd
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/ProjetoMIPS_Final.qpf
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/ProjetoMIPS_Final.qsf
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/ProjetoMIPS_Final.vhd
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/RAMMIPS.vhd
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/RAMcontent.mif
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/ROMMIPS.vhd
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/ROMcontent.mif
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/ROMcontent_LBUeNOR.mif
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/ROMcontent_NOR.mif
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/SomadorCompleto1bit.vhd
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/ULA.vhd
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/ULA1bit.vhd
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/ULA31bit.vhd
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/ULASomaSub.vhd
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/UnidadeControle.vhd
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/UnidadeControleULA.vhd
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/bancoRegistradores.vhd
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/buffer_3_state_8portas.vhd
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/conversorHex7Seg.vhd
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/edgeDetector.vhd
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/estendeSinalGenerico.vhd
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/flipflop.vhd
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/muxGenerico2x1.vhd
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/muxGenerico2x1_1bit.vhd
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/muxGenerico4x1.vhd
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/muxGenerico4x_1bit.vhd
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/registradorGenerico.vhd
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/shiftLeft.vhd
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/somaConstante.vhd
+/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/somadorGenerico.vhd
+/home/leticiacb/intelFPGA_lite/20.1/quartus/linux64/assignment_defaults.qdf
+	======= Total: 33 files to archive =======
+
+	================ Status: ===============
+All files archived successfully.
+
+
+******* Archived project restoration attempt on Mon Jun 12 09:25:32 2023
+Source archive file:	/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/ProjetoMIPS_Final.qar
+Archive was extracted into	/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/ProjetoMIPS_Final_restored/
+		 - successfully.
+
+
+******* Archived project restoration attempt on Mon Jun 12 09:30:45 2023
+Source archive file:	/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/ProjetoMIPS_Final.qar
+Archive was extracted into	/home/leticiacb/Documents/Descomp/DESCOMP/Projeto_MIPS_Final/ProjetoMIPS_Final_restored/
+		 - successfully.
